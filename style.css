@@ -1,0 +1,66 @@
+body{margin:0; padding:0; }
+#map {position:absolute; top:0; bottom:0; width:100%; left:0px;}
+#College-list {
+	position:absolute;
+	top:0; left:0; width:200px;
+	bottom:0;
+	overflow-x:auto;
+	background:#f7f7f7;
+	margin:0;
+	font-family: "Avenir Next", "Avenir", sans-serif;
+	color: #103823;
+	padding:5px;
+}
+
+#Student-list {
+	position:absolute;
+	top:0; left:0; width:200px;
+	bottom:0;
+	overflow-x:auto;
+	background:#f7f7f7;
+	margin:0;
+	font-family: "Avenir Next", "Avenir", sans-serif;
+	color: #103823;
+	padding:5px;
+}
+h3 {
+	text-align:center;
+}
+
+
+#fdiv {
+	font-family: "Oswald", sans-serif;
+}
+#fdiv2 {
+	font-family: "Oswald", sans-serif;
+}
+
+#restaurantTitle {
+	font-family: "Source Sans Pro", sans-serif;
+}
+
+#divid{
+	text-align:center;
+	padding:5px;
+	margin:0;
+	color: #109923;
+	display:block;
+
+}
+#divid:hover {
+color:#103823;
+background:#e7efff;
+  }
+
+#divid2{
+	text-align:center;
+	padding:5px;
+	margin:0;
+	color: #109923;
+	display:block;
+
+}
+#divid2:hover {
+color:#103823;
+background:#e7efff;
+  }

@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<title>Paly College Map 2016-2017</title>
+		<!-- For Mobile device scaling optimization -->
+		<meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+		<!-- Inputs Mapbox [map render software] JS and CSS -->
+		<script src='https://api.mapbox.com/mapbox.js/v3.0.1/mapbox.js'></script>
+		<link href='https://api.mapbox.com/mapbox.js/v3.0.1/mapbox.css' rel='stylesheet' />
+	<!-- Imports the separate css file and Campy icon -->
+		<link href="style.css" rel="stylesheet">
+    	<link rel="icon" type="image/png" sizes="16x16" href="favicon-96x96.png">
+    	<link href="https://fonts.googleapis.com/css?family=Oswald" rel="stylesheet">
+    	<link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro" rel="stylesheet">
+
+	    	<!-- Bootstrap Core CSS -->
+	    <link href="bootstrap.min.css" rel="stylesheet">
+
+	    <!-- Custom CSS -->
+	    <link href="sidebar.css" rel="stylesheet">
+	      <link href="sidebarright.css" rel="stylesheet">
+	    <!-- Bootstrap Core JavaScript -->
+	    <script src="jquery.js"></script>
+ 	   <script src="bootstrap.min.js"></script>
+ 	   
+
+ 	   <!-- Easy Button -->
+ 	   <script src="easybutton/easy-button.js"></script>
+ 	   <link href="easybutton/easy-button.css" rel="stylesheet">
+
+ 	   <!-- Awesome Fonts -->
+ 	   <link rel="stylesheet" href="font-awesome-4.7.0/css/font-awesome.min.css">
+
+	</head>
+	<body>
+	<!-- ???Implement NavBar-->
+
+	    <div id="wrapper">
+
+	        <!-- Sidebar -->
+	        <div id="sidebar-wrapper">
+			    <ul class="sidebar-brand" id="Student-list">
+					<h3 id ='fdiv2'>Student List</h3>					
+			    </ul>
+			</div>
+	    </div>
+	
+	    <div id='map'></div>
+	    <div id="wrapper2">
+	    	<div id ="sidebarright-wrapper2">
+	    		<ul class="sidebarright-brand" id="College-list">
+	    			<h3 id='fdiv'>College List</h3>
+	    		</ul>
+	    	</div>
+	    </div>
+		
+		<script src='students.js'></script>
+		<script>
+
+
+		// Token needed from edansneh account on mapbox
+		L.mapbox.accessToken = 'pk.eyJ1IjoiZWRhbnNuZWgiLCJhIjoiY2l6ZHJjMmkwMmM0aTJ3cG84OTRqcWZ5OCJ9.b4PGzITgTv5xHX3q6763BA';
+		
+		//starting point and zoom factors of map [latitude, longitide]
+		var map = L.mapbox.map('map','mapbox.streets',{
+			minZoom:3,
+			center: [39.134172, -98.628082],
+			zoom: 4.488,
+			maxZoom:20
+		});
+
+		//activate on open
+		$("#wrapper").toggleClass("toggled");
+		$("#wrapper2").toggleClass("toggled");
+		//easybutton search
+		L.easyButton('fa-search', function() {
+        $("#wrapper").toggleClass("toggled");
+        $("#wrapper2").toggleClass("toggled");
+
+        
+    }
+	).addTo(map);
+		// easybutton home
+		L.easyButton('fa-home', function() {
+        map.setView([39.134172, -98.628082], 4.488);    }
+	).addTo(map);
+
+
+		//sorting function for markers
+		//Credit to David Brainer at: http://stackoverflow.com/questions/8837454/sort-array-of-objects-by-single-key-with-date-value
+		function sortByKey(array, key) {
+		    return array.sort(function(a, b) {
+		        var x = a[key].toLowerCase(); var y = b[key].toLowerCase();
+		        return ((x < y) ? -1 : ((x > y) ? 1 : 0));
+		    });
+		}
+
+		
+
+		//ordered list of all colleges
+		sortByKey(SchoolData, 'collegeName');
+
+		var previousdiv = document.getElementById('College-list');
+		//produces all of markers
+		var markerL = [];
+
+		for (var i = 0; i <= SchoolData.length - 1; i++) {
+			var nextcollege = SchoolData[i];
+			
+			var marker = new L.marker(SchoolData[i].coordinate);
+			markerL.push(marker);
+			marker.addTo(map);
+			//add text
+			var markertext = L.popup({
+	     		 closeButton: false,
+	    		  offset: L.point(0,0)
+	    	})
+			.setContent("");
+			
+	    	/*
+			HTML OF RESTURANTS FOR NEATNESS
+			
+	    	*/
+	    	var str = "";
+			for(var j = 0; j<= nextcollege.students.length-1; j++){
+				var person = nextcollege.students[j]
+				str += "<p style = 'margin:0px'>"+nextcollege.students[j]+"</p>";
+			}
+			markertext.setContent("<p style = 'margin:0px'>"+nextcollege.collegeName+" ("+nextcollege.students.length+")</p><hr style = 'margin:3px'>" +str
+				//"<h1 id='restaurantTitle' style='text-align:center'>"
+			// 	+SchoolData[i].site+ "</h1>"
+			// 	+ "<div style='text-align:center'>"+SchoolData[i].link+SchoolData[i].img + "</a></div>"
+			// 	+"<br/>"
+			// 	+ SchoolData[i].link +"<h1 id='restaurantTitle' style='text-align:center;'>"
+			// 	+SchoolData[i].name+"</h1></a></p>"
+
+			);
+			
+		
+			marker.bindPopup(markertext);
+			//creates HTML div for each element in list
+			var htmlrest = document.createElement('newdiv');
+			htmlrest.id = "divid";
+			previousdiv.appendChild(htmlrest);
+	  		htmlrest.innerHTML = SchoolData[i].collegeName;
+	  		
+	  		SchoolData[i].coordinate;
+	  		
+	  		htmlrest.setAttribute("markerindex", i);
+	  		//creates mouselistener from list to marker
+	  		htmlrest.addEventListener("click", function(e) {
+
+	  		var index = e.target.getAttribute("markerindex");
+	  		map.setView(markerL[index].getLatLng(), 15);
+	  		markerL[index].fire('click');
+	  		 //$("#wrapper").toggleClass("toggled");
+	  		});
+
+		}
+
+
+		//ordered list of all students
+		var allstudents = [];
+		var previousdiv2 = document.getElementById('Student-list');
+		for(var i = 0; i<= SchoolData.length -1; i++){
+			var nextcollege = SchoolData[i];
+			for(var j = 0; j<= SchoolData[i].students.length-1; j++){
+				allstudents.push([SchoolData[i].students[j], i]);
+		  		//creates mouselistener from list to marker
+		  		// htmlrest.addEventListener("click", function(e) {
+
+		  		// var index = e.target.getAttribute("markerindex");
+		  		// map.setView(markerL[index].getLatLng(), 15);
+		  		// markerL[index].fire('click');
+		  		//  $("#wrapper2").toggleClass("toggled");
+		  		// });	
+			}
+		}
+		for(var i = 0; i<=allstudents.length-1; i++){
+			
+			allstudents.sort();
+			var htmlrest = document.createElement('newdiv');
+			htmlrest.id = "divid2";
+			previousdiv2.appendChild(htmlrest);
+	  		htmlrest.innerHTML = allstudents[i][0];
+	  		
+	  		htmlrest.setAttribute("markerindex2", allstudents[i][1]);
+	  		//htmlrest.setAttribute("class", "search1");
+	  		//create stuff
+		  	htmlrest.addEventListener("click", function(e) {
+
+		  	var index = e.target.getAttribute("markerindex2");
+		
+		  	map.setView(markerL[index].getLatLng(), 15);
+		  	markerL[index].fire('click');
+		  		//$("#wrapper2").toggleClass("toggled");
+		  	});
+		}
+
+
+		</script>    
+	</body>
+</html>
+

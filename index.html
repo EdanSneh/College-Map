@@ -11,7 +11,7 @@
 		<script src='https://api.mapbox.com/mapbox.js/v3.0.1/mapbox.js'></script>
 		<link href='https://api.mapbox.com/mapbox.js/v3.0.1/mapbox.css' rel='stylesheet' />
 	<!-- Imports the separate css file and Campy icon -->
-		<link href="style.css" rel="stylesheet">
+		<link href="cmstyle.css" rel="stylesheet">
     	<link rel="icon" type="image/png" sizes="16x16" href="favicon-96x96.png">
     	<link href="https://fonts.googleapis.com/css?family=Oswald" rel="stylesheet">
     	<link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro" rel="stylesheet">
@@ -81,13 +81,14 @@
 			center: [39.134172, -98.628082],
 			zoom: 4.488,
 			maxZoom:20
+			
 		});
 
 		//activate on open
 		$("#wrapper").toggleClass("toggled");
 		$("#wrapper2").toggleClass("toggled");
 		//easybutton search
-		L.easyButton('fa-search', function() {
+		L.easyButton('fa-toggle-off', function() {
         $("#wrapper").toggleClass("toggled");
         $("#wrapper2").toggleClass("toggled");
 
@@ -98,6 +99,27 @@
 		L.easyButton('fa-home', function() {
         map.setView([39.134172, -98.628082], 4.488);    }
 	).addTo(map);
+
+		L.easyButton('fa-th-list', function(){
+	       var divs = document.getElementsByClassName('search1');
+	       var divs2 = document.getElementsByClassName('search2');
+				// //alert(divs[0].innerHTML.indexOf(x));
+			   	for(var i=0; i<divs.length; i++){
+			   		$("#"+divs[i].id).css({
+				            'display' : 'block'
+	     				});
+			   	}
+			   	for(var i=0; i<divs2.length; i++){
+			   		$("#"+divs2[i].id).css({
+				            'display' : 'block'
+	     				});
+			   	}
+			 //   	return false;
+			   
+
+	    }
+	).addTo(map);
+
 
 
 		//sorting function for markers
@@ -121,13 +143,20 @@
 		for (var i = 0; i <= SchoolData.length - 1; i++) {
 			var nextcollege = SchoolData[i];
 			
-			var marker = new L.marker(SchoolData[i].coordinate);
+			var marker = new L.marker(SchoolData[i].coordinate,{	  riseOnHover: true});
+			marker.on('mouseover', function (e) {
+	            this.openPopup();
+	        });
+	        marker.on('mouseout', function (e) {
+	            this.closePopup();
+	        });
 			markerL.push(marker);
 			marker.addTo(map);
 			//add text
 			var markertext = L.popup({
 	     		 closeButton: false,
-	    		  offset: L.point(0,0)
+	    		  offset: L.point(0,0),
+	    	
 	    	})
 			.setContent("");
 			

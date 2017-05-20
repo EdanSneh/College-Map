@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<title>Paly College Map 2017</title>
+		<!-- For Mobile device scaling optimization -->
+		<meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+		<!-- Inputs Mapbox [map render software] JS and CSS -->
+		<script src='https://api.mapbox.com/mapbox.js/v3.0.1/mapbox.js'></script>
+		<link href='https://api.mapbox.com/mapbox.js/v3.0.1/mapbox.css' rel='stylesheet' />
+	<!-- Imports the separate css file and Campy icon -->
+		<link href="http://thecampanile.org/wp-content/uploads/2017/05/cmstyle.css" rel="stylesheet">
+    	<link rel="icon" type="image/png" sizes="16x16" href="favicon-96x96.png">
+    	<link href="https://fonts.googleapis.com/css?family=Oswald" rel="stylesheet">
+    	<link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro" rel="stylesheet">
+    	<link href="https://fonts.googleapis.com/css?family=Merriweather" rel="stylesheet">
+    	<link href="https://fonts.googleapis.com/css?family=Lora:700,700i" rel="stylesheet">
+
+	    	<!-- Bootstrap Core CSS -->
+	    <link href="http://thecampanile.org/wp-content/uploads/2017/03/bootstrap.min_.css" rel="stylesheet">
+
+	    <!-- Custom CSS -->
+	    <link href="http://thecampanile.org/wp-content/uploads/2017/05/sidebar.css" rel="stylesheet">
+	      <link href="http://thecampanile.org/wp-content/uploads/2017/05/sidebarright.css" rel="stylesheet">
+	    <!-- Bootstrap Core JavaScript -->
+	    <script src="http://thecampanile.org/wp-content/uploads/2017/03/jquery.js"></script>
+ 	   <script src="http://thecampanile.org/wp-content/uploads/2017/03/bootstrap.min_.js"></script>
+ 	   
+
+ 	   <!-- Easy Button -->
+ 	   <script src="http://thecampanile.org/wp-content/uploads/2017/05/easy-button.js"></script>
+ 	   <link href="http://thecampanile.org/wp-content/uploads/2017/05/easy-button.css" rel="stylesheet">
+
+ 	   <!-- Awesome Fonts -->
+ 	  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+	</head>
+	<body>
+	<!-- ???Implement NavBar-->
+
+	    <div id="wrapper">
+
+	        <!-- Sidebar -->
+
+	        <div id="sidebar-wrapper">
+			    <ul class="sidebar-brand" id="Student-list">
+					<div>
+						<h3 id ='fdiv2'>Student List</h3>
+						<form id="searching" onsubmit="return find();">
+							<input id="search" type="text" />
+							<input type="submit" value='Search'>
+						</form>		
+					</div>	
+			    </ul>
+			</div>
+	    </div>
+	
+	    <div id='map'></div>
+	    <div id="wrapper2">
+	    	<div id ="sidebarright-wrapper2">
+	    		<ul class="sidebarright-brand" id="College-list">
+	    			<h3 id='fdiv'>College List</h3>
+	    			<form id="searching" onsubmit="return find2();">
+							<input id="searchB" type="text" />
+							<input type="submit" value='Search'>
+						</form>	
+	    		</ul>
+	    	</div>
+	    </div>
+		
+		<script src='http://thecampanile.org/wp-content/uploads/2016/01/students-1.js'></script>
+		<script>
+
+
+		// Token needed from edansneh account on mapbox
+		L.mapbox.accessToken = 'pk.eyJ1IjoiZWRhbnNuZWgiLCJhIjoiY2l6ZHJjMmkwMmM0aTJ3cG84OTRqcWZ5OCJ9.b4PGzITgTv5xHX3q6763BA';
+		
+		//starting point and zoom factors of map [latitude, longitide]
+		var map = L.mapbox.map('map','mapbox.streets',{
+			minZoom:3,
+			center: [39.134172, -98.628082],
+			zoom: 4.488,
+			maxZoom:20
+			
+		});
+
+		//activate on open
+		$("#wrapper").toggleClass("toggled");
+		$("#wrapper2").toggleClass("toggled");
+		//easybutton search
+		L.easyButton('fa-search', function() {
+        $("#wrapper").toggleClass("toggled");
+        $("#wrapper2").toggleClass("toggled");
+
+        
+    }
+	).addTo(map);
+		// easybutton home
+		L.easyButton('fa-home', function() {
+        map.setView([39.134172, -98.628082], 4.488); 
+          var divs = document.getElementsByClassName('search1');
+	       var divs2 = document.getElementsByClassName('search2');
+				// //alert(divs[0].innerHTML.indexOf(x));
+			   	for(var i=0; i<divs.length; i++){
+			   		$("#"+divs[i].id).css({
+				            'display' : 'block'
+	     				});
+			   	}
+			   	for(var i=0; i<divs2.length; i++){
+			   		$("#"+divs2[i].id).css({
+				            'display' : 'block'
+	     				});
+			   	}
+			 //   	return false;
+			   
+
+	    }
+	).addTo(map);
+
+	// 	L.easyButton('fa-arrow-left', function(){
+	//        var divs = document.getElementsByClassName('search1');
+	//        var divs2 = document.getElementsByClassName('search2');
+	// 			// //alert(divs[0].innerHTML.indexOf(x));
+	// 		   	for(var i=0; i<divs.length; i++){
+	// 		   		$("#"+divs[i].id).css({
+	// 			            'display' : 'block'
+	//      				});
+	// 		   	}
+	// 		   	for(var i=0; i<divs2.length; i++){
+	// 		   		$("#"+divs2[i].id).css({
+	// 			            'display' : 'block'
+	//      				});
+	// 		   	}
+	// 		 //   	return false;
+			   
+
+	//     }
+	// ).addTo(map);
+
+
+
+		//sorting function for markers
+		//Credit to David Brainer at: http://stackoverflow.com/questions/8837454/sort-array-of-objects-by-single-key-with-date-value
+		function sortByKey(array, key) {
+		    return array.sort(function(a, b) {
+		        var x = a[key].toLowerCase(); var y = b[key].toLowerCase();
+		        return ((x < y) ? -1 : ((x > y) ? 1 : 0));
+		    });
+		}
+
+		
+
+		//ordered list of all colleges
+		sortByKey(SchoolData, 'collegeName');
+
+		var previousdiv = document.getElementById('College-list');
+		//produces all of markers
+		var markerL = [];
+
+		for (var i = 0; i <= SchoolData.length - 1; i++) {
+			var nextcollege = SchoolData[i];
+			
+			var marker = new L.marker(SchoolData[i].coordinate,{	  riseOnHover: true});
+			marker.on('mouseover', function (e) {
+	            this.openPopup();
+	        });
+	        marker.on('mouseout', function (e) {
+	            this.closePopup();
+	        });
+			markerL.push(marker);
+			marker.addTo(map);
+			//add text
+			var markertext = L.popup({
+	     		 closeButton: false,
+	    		  offset: L.point(0,0),
+	    	
+	    	})
+			.setContent("");
+			
+	    	/*
+			HTML OF RESTURANTS FOR NEATNESS
+			
+	    	*/
+	    	var str = "";
+	    	nextcollege.students.sort();
+			for(var j = 0; j<= nextcollege.students.length-1; j++){
+				var person = nextcollege.students[j]
+				str += "<p style = 'margin:0px; font-family: Merriweather, serif; font-size:90%;'>"+nextcollege.students[j]+"</p>";
+			}
+			markertext.setContent("<p style = 'margin:0px; font-family: Lora, serif; font-size:110%; font-weight:bold;'>"+nextcollege.collegeName+" ("+nextcollege.students.length+")</p><hr style = 'margin:3px'>" +str
+			);
+			
+		
+			marker.bindPopup(markertext);
+			//creates HTML div for each element in list
+			var htmlrest = document.createElement('newdiv');
+			htmlrest.setAttribute("divid",0);
+			previousdiv.appendChild(htmlrest);
+	  		htmlrest.innerHTML = SchoolData[i].collegeName;
+	  		
+	  		SchoolData[i].coordinate;
+	  		
+	  		htmlrest.setAttribute("markerindex", i);
+	  		htmlrest.setAttribute("class", "search2");
+	  		htmlrest.setAttribute("id", i);
+	  		//creates mouselistener from list to marker
+	  		htmlrest.addEventListener("click", function(e) {
+
+	  		var index = e.target.getAttribute("markerindex");
+	  		map.setView(markerL[index].getLatLng(), 6);
+	  		markerL[index].fire('click');
+	  		 //$("#wrapper").toggleClass("toggled");
+	  		});
+
+		}
+
+
+		//ordered list of all students
+		var allstudents = [];
+		var previousdiv2 = document.getElementById('Student-list');
+		for(var i = 0; i<= SchoolData.length -1; i++){
+			var nextcollege = SchoolData[i];
+			for(var j = 0; j<= SchoolData[i].students.length-1; j++){
+				allstudents.push([SchoolData[i].students[j], i]);
+		  		//creates mouselistener from list to marker
+		  		// htmlrest.addEventListener("click", function(e) {
+
+		  		// var index = e.target.getAttribute("markerindex");
+		  		// map.setView(markerL[index].getLatLng(), 15);
+		  		// markerL[index].fire('click');
+		  		//  $("#wrapper2").toggleClass("toggled");
+		  		// });	
+			}
+		}
+		allstudents.sort();
+		for(var i = 0; i<=allstudents.length-1; i++){
+			
+		
+			var htmlrest = document.createElement('newdiv');
+			htmlrest.setAttribute("divid", 0);
+			previousdiv2.appendChild(htmlrest);
+	  		htmlrest.innerHTML = allstudents[i][0];
+	  		
+	  		htmlrest.setAttribute("markerindex2", allstudents[i][1]);
+	  		htmlrest.setAttribute("class", "search1");
+	  		htmlrest.setAttribute("id", i+400);
+	  		//create stuff
+		  	htmlrest.addEventListener("click", function(e) {
+
+		  	var index = e.target.getAttribute("markerindex2");
+		
+		  	map.setView(markerL[index].getLatLng(), 6);
+		  	markerL[index].fire('click');
+		  		//$("#wrapper2").toggleClass("toggled");
+		  	});
+		}
+
+
+		</script>
+
+<!-- Search Engine -->
+		<script>
+		//function run by form to search
+		function find() {
+
+
+		    var x = document.getElementById('search').value.toLowerCase();
+		 	//var y = document.getElementbyId('smh').innerHTML.indexOf(x) != -1
+			var divs= document.getElementsByClassName('search1');
+			//alert(divs[0].innerHTML.indexOf(x));
+		   if(x==""){
+		   	for(var i=0; i<divs.length; i++){
+		   		$("#"+divs[i].id).css({
+			            'display' : 'block'
+     				});
+		   	}
+		   	return false;
+		   }
+		    if(x.length==1){
+				for(var i=0; i<divs.length; i++){
+					if(divs[i].innerHTML.charAt(0).toLowerCase().indexOf(x) == -1){
+				   		//$("#"+divs[i].id).toggleClass("toggled");
+				   		
+				   		$("#"+divs[i].id).css({
+				            'display' : 'none'
+	     				});
+			  	 	}
+			  	 	else{		  
+			  	 		$("#"+divs[i].id).css({
+				            'display' : 'block'
+	     				});
+			  	 	}
+			  	 }
+		   	return false;
+		   }
+		  
+		   if(x.length<4){
+				for(var i=0; i<divs.length; i++){
+					firstlast = divs[i].innerHTML.toString().split(" ");
+					
+					if(firstlast[0].substring(0,x.length).toLowerCase().indexOf(x) == -1 && firstlast[1].substring(0,x.length).toLowerCase().indexOf(x) == -1){
+				   		//$("#"+divs[i].id).toggleClass("toggled");
+				   		
+				   		$("#"+divs[i].id).css({
+				            'display' : 'none'
+	     				});
+			  	 	}
+			  	 	else{		  
+			  	 		$("#"+divs[i].id).css({
+				            'display' : 'block'
+	     				});
+			  	 	}
+			  	 }
+		   	return false;
+		   }
+
+		   for(var i=0; i<divs.length; i++){
+		   	//str = divs[i].innerHTML.toLowerCase();
+
+		   		if(divs[i].innerHTML.toLowerCase().indexOf(x) == -1){
+			   		//$("#"+divs[i].id).toggleClass("toggled");
+			   		
+			   		$("#"+divs[i].id).css({
+			            'display' : 'none'
+     				});
+		  	 	}
+		  	 	else{		  
+		  	 		$("#"+divs[i].id).css({
+			            'display' : 'block'
+     				});
+		  	 	}
+		   }
+
+		   return false;
+		}
+
+		function find2() {
+
+
+		    var x = document.getElementById('searchB').value.toLowerCase();
+		 	//var y = document.getElementbyId('smh').innerHTML.indexOf(x) != -1
+			var divs= document.getElementsByClassName('search2');
+			//alert(divs[0].innerHTML.indexOf(x));
+		   if(x==""){
+		   	for(var i=0; i<divs.length; i++){
+		   		$("#"+divs[i].id).css({
+			            'display' : 'block'
+     				});
+		   	}
+		   	return false;
+		   }
+		   if(x.length==1){
+				for(var i=0; i<divs.length; i++){
+					if(divs[i].innerHTML.charAt(0).toLowerCase().indexOf(x) == -1){
+				   		//$("#"+divs[i].id).toggleClass("toggled");
+				   		
+				   		$("#"+divs[i].id).css({
+				            'display' : 'none'
+	     				});
+			  	 	}
+			  	 	else{		  
+			  	 		$("#"+divs[i].id).css({
+				            'display' : 'block'
+	     				});
+			  	 	}
+			  	 }
+		   	return false;
+		   }
+
+		   for(var i=0; i<divs.length; i++){
+		   	//str = divs[i].innerHTML.toLowerCase();
+
+		   		if(divs[i].innerHTML.toLowerCase().indexOf(x) == -1){
+			   		//$("#"+divs[i].id).toggleClass("toggled");
+			   		
+			   		$("#"+divs[i].id).css({
+			            'display' : 'none'
+     				});
+		  	 	}
+		  	 	else{		  
+		  	 		$("#"+divs[i].id).css({
+			            'display' : 'block'
+     				});
+		  	 	}
+		   }
+
+		   return false;
+		}
+		</script>
+
+		<!-- Phyiscial Search Engine -->
+		
+	</body>
+</html>
+
